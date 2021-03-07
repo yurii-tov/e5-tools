@@ -7,7 +7,7 @@
 ######  #####       #    ####   ####  ######  ####  
                                                     
 
-* Handling e5, sane way
+* Working with e5, sane way
 
 
 ** Pre-requisites
