@@ -1,3 +1,8 @@
+[ "$OSTYPE" = "linux-gnu" ] || {
+    IS_WINDOWS=true
+}
+
+
 export E5_ROOT_DIR_WINDOWS='c:/Program Files (x86)/1C Education/1CE5'
 export E5_ROOT_DIR_LINUX='/opt/1CE5'
 
@@ -8,12 +13,15 @@ export E5_ROOT_DIR_LINUX='/opt/1CE5'
 }
 
 
-export E5_CD_ROOT_DIR="{ cd '$E5_ROOT_DIR_LINUX' || cd '$E5_ROOT_DIR_WINDOWS'; } 2>/dev/null"
+export E5_ROOT_DIR="$E5_ROOT_DIR_LINUX"
 
 
-[ "$OSTYPE" = "linux-gnu" ] || {
-    IS_WINDOWS=true
+[ "$IS_WINDOWS" ] && {
+    E5_ROOT_DIR="$E5_ROOT_DIR_WINDOWS"
 }
+
+
+export E5_CD_ROOT_DIR="{ cd '$E5_ROOT_DIR_LINUX' || cd '$E5_ROOT_DIR_WINDOWS'; } 2>/dev/null"
 
 
 # server control
@@ -38,7 +46,7 @@ alias e5-server-restart='e5-server-stop; sleep 10; e5-server-start'
 
 
 function dbutils() {
-    "$E5_ROOT_DIR_LINUX/DBUtils.sh" "$@"
+    "$E5_ROOT_DIR/DBUtils.sh" "$@"
 }
 
 
@@ -46,7 +54,7 @@ if [ "$IS_WINDOWS" ]; then
     function dbutils() {
         local -
         set -o pipefail
-        "$E5_ROOT_DIR_WINDOWS/1CEduWeb/utils/1CE5DbUtils" "$@" |& iconv -f cp866 -t utf-8
+        "$E5_ROOT_DIR/1CEduWeb/utils/1CE5DbUtils" "$@" |& iconv -f cp866 -t utf-8
     }
 fi
 
@@ -139,4 +147,40 @@ function e5-logs-dump() {
 
 function e5-logs-delete() {
     bash -c "$E5_CD_ROOT_DIR ; rm -rv 1CEduWeb/webapps/1CEduWeb/WEB-INF/log common/jetty/logs/*"
+}
+
+
+# dlr loader
+
+function dlrloader() {
+    local OPTIND=1
+    while getopts "hs:p:t:" o; do
+        case $o in
+            t) local thread_count=$OPTARG;;
+            s) local host=$OPTARG;;
+            p) local port=$OPTARG;;
+            h)
+                echo 'Usage: dlrloader [-t <thread count>]'
+                echo '                 [-s <host>]'
+                echo '                 [-p <port>]'
+                echo 'For custom dlrloader base folder, use E5_DLR_LOADER_HOME env variable'
+                return 0
+        esac
+    done
+    local E5_DLR_LOADER_HOME="${E5_DLR_LOADER_HOME:-$E5_ROOT_DIR/1CEduWeb/app}"
+    local thread_count=${thread_count:-1}
+    local host=${host:-localhost}
+    local port=${port:-8095}
+    local thread_count_option='<entry key="loaderThreadsCount">'"$thread_count"'</entry>'
+    local host_option='<entry key="host">'"$host"'</entry>'
+    local port_option='<entry key="port">'"$port"'</entry>'
+    sed -e '/"loaderThreadsCount"/ d' \
+        -e '/"port"/ d' \
+        -e '/"host"/ d' \
+        -e '/<properties/ a '"$thread_count_option" \
+        -e '/<properties/ a '"$port_option" \
+        -e '/<properties/ a '"$host_option" \
+        -i \
+        "$E5_DLR_LOADER_HOME/config/ConnectionProperties.xml"
+    "$E5_DLR_LOADER_HOME/dlrloader/1CE5Loader.exe" &
 }
