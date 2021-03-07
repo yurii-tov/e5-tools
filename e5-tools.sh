@@ -19,7 +19,7 @@ export E5_CD_ROOT_DIR="{ cd '$E5_ROOT_DIR_LINUX' || cd '$E5_ROOT_DIR_WINDOWS'; }
 # server control
 
 
-alias e5-server-status='ps | grep -i 1c'
+alias e5-server-status="ps -eH | sed -n '/StartServer/,/ java/ p'"
 alias e5-server-stop="$E5_ROOT_DIR_LINUX/StopServer.sh"
 alias e5-server-start="$E5_ROOT_DIR_LINUX/StartServer.sh &"
 alias e5-server-restart='e5-server-stop; sleep 10; e5-server-start'
@@ -112,14 +112,14 @@ function e5-isql() {
 # Messing with logs
 
 
-function e5-dump-logs() {
+function e5-logs-dump() {
     local OPTIND=1
     while getopts "hd:r:" o; do
         case $o in
             d) local dump_file="$(readlink -f "$OPTARG/logs_$(date '+%F_%H%M%S').tar.gz")";;
             r) local ssh_spec=$OPTARG;;
             h)
-                echo 'Usage: e5-dump-logs [-d <directory where place logs .tar.gz>]'
+                echo 'Usage: e5-logs-dump [-d <directory where place logs .tar.gz>]'
                 echo '                    # By default, dumping tar stream into stdout'
                 echo '                    [-r <remote hosts spec, e.g. user@host>]'
                 return 0 ;;
@@ -137,6 +137,6 @@ function e5-dump-logs() {
 }
 
 
-function e5-delete-logs() {
+function e5-logs-delete() {
     bash -c "$E5_CD_ROOT_DIR ; rm -rv 1CEduWeb/webapps/1CEduWeb/WEB-INF/log common/jetty/logs/*"
 }
