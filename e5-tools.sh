@@ -168,12 +168,15 @@ function dlrloader() {
         esac
     done
     local E5_DLR_LOADER_HOME="${E5_DLR_LOADER_HOME:-$E5_ROOT_DIR/1CEduWeb/app}"
+    local settings_file="$E5_DLR_LOADER_HOME/config/ConnectionProperties.xml"
+
     local thread_count=${thread_count:-4}
     local host=${host:-localhost}
     local port=${port:-8095}
     local thread_count_option='<entry key="loaderThreadsCount">'"$thread_count"'</entry>'
     local host_option='<entry key="host">'"$host"'</entry>'
     local port_option='<entry key="port">'"$port"'</entry>'
+
     sed -e '/"loaderThreadsCount"/ d' \
         -e '/"port"/ d' \
         -e '/"host"/ d' \
@@ -181,6 +184,7 @@ function dlrloader() {
         -e '/<properties/ a '"$port_option" \
         -e '/<properties/ a '"$host_option" \
         -i \
-        "$E5_DLR_LOADER_HOME/config/ConnectionProperties.xml"
+        "$settings_file"
+    cat "$settings_file"
     "$E5_DLR_LOADER_HOME/dlrloader/1CE5Loader.exe" &
 }
