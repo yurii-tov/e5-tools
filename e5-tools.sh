@@ -168,7 +168,7 @@ function dlrloader() {
         esac
     done
     local E5_DLR_LOADER_HOME="${E5_DLR_LOADER_HOME:-$E5_ROOT_DIR/1CEduWeb/app}"
-    local thread_count=${thread_count:-1}
+    local thread_count=${thread_count:-4}
     local host=${host:-localhost}
     local port=${port:-8095}
     local thread_count_option='<entry key="loaderThreadsCount">'"$thread_count"'</entry>'
