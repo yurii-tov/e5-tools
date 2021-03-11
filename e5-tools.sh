@@ -5,11 +5,13 @@
 
 export E5_ROOT_DIR_WINDOWS='c:/Program Files (x86)/1C Education/1CE5'
 export E5_ROOT_DIR_LINUX='/opt/1CE5'
+export E5_DBUTILS_WINDOWS="$E5_ROOT_DIR_WINDOWS/1CEduWeb/utils/1CE5DbUtils"
 
 
 [ "$E5_BRANCH" = "oko" ] && {
     export E5_ROOT_DIR_WINDOWS='c:/Program Files (x86)/1C OKO'
     export E5_ROOT_DIR_LINUX='/opt/1COKO'
+    export E5_DBUTILS_WINDOWS="$E5_ROOT_DIR_WINDOWS/1CEduWeb/utils/1COKODbUtils"
 }
 
 
@@ -54,7 +56,7 @@ if [ "$IS_WINDOWS" ]; then
     function dbutils() {
         local -
         set -o pipefail
-        "$E5_ROOT_DIR/1CEduWeb/utils/1CE5DbUtils" "$@" |& iconv -f cp866 -t utf-8
+        "$E5_DBUTILS_WINDOWS" "$@" |& iconv -f cp866 -t utf-8
     }
 fi
 
