@@ -130,12 +130,15 @@ function e5-dump() {
             r) local ssh_spec=$OPTARG;;
             b) local bases=$OPTARG;;
             h)
-                echo 'Usage: e5-logs-dump [-d <directory where place logs .tar.gz>]'
-                echo '                    # By default, dumping tar stream into stdout'
-                echo '                    [-r <remote hosts spec, e.g. user@host>]'
-                echo '                    [-b <comma-separated list of bases to include into dump, '
-                echo '                         relative to 1CEduWeb/data directory>]'
-                echo '                         # e.g. -b edu_main/ls.fdb,x/ls.fdb'
+                echo 'Dumping various postmortem data: logs, config files, databases...'
+                echo 'By default, write tar.gz stream into stdout'
+                echo '-----------------------------------------------------------------'
+                echo 'Usage: e5-dump [-d <directory where place logs .tar.gz>]'
+                echo '               # By default, dumping tar stream into stdout'
+                echo '               [-r <remote hosts spec, e.g. user@host>]'
+                echo '               [-b <comma-separated list of bases to include into dump>]'
+                echo '               # relative to 1CEduWeb/data directory'
+                echo '               # e.g. -b edu_main/ls.fdb,x/ls.fdb'
                 return 0 ;;
             ?) dump-e5-logs -h ; return 1 ;;
         esac
@@ -152,7 +155,7 @@ function e5-dump() {
 }
 
 
-function e5-logs-delete() {
+function e5-delete-logs() {
     bash -c "$E5_CD_ROOT_DIR ; rm -rv 1CEduWeb/webapps/1CEduWeb/WEB-INF/log common/jetty/logs/*"
 }
 
