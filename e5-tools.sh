@@ -119,25 +119,30 @@ function e5-isql() {
 }
 
 
-# Messing with logs
+# Messing with logs/postmortems
 
 
-function e5-logs-dump() {
+function e5-dump() {
     local OPTIND=1
-    while getopts "hd:r:" o; do
+    while getopts "hd:r:b:" o; do
         case $o in
             d) local dump_file="$(readlink -f "$OPTARG/logs_$(date '+%F_%H%M%S').tar.gz")";;
             r) local ssh_spec=$OPTARG;;
+            b) local bases=$OPTARG;;
             h)
                 echo 'Usage: e5-logs-dump [-d <directory where place logs .tar.gz>]'
                 echo '                    # By default, dumping tar stream into stdout'
                 echo '                    [-r <remote hosts spec, e.g. user@host>]'
+                echo '                    [-b <comma-separated list of bases to include into dump, '
+                echo '                         relative to 1CEduWeb/data directory>]'
+                echo '                         # e.g. -b edu_main/ls.fdb,x/ls.fdb'
                 return 0 ;;
             ?) dump-e5-logs -h ; return 1 ;;
         esac
     done
     local command="$E5_CD_ROOT_DIR ; tar -cz 1CEduWeb/webapps/1CEduWeb/WEB-INF/{ls.xml,web.xml,log} 1CEduWeb/app*/build.properties common/jetty/etc/{*.properties,*.xml} common/jetty/logs"
     [ "$ssh_spec" ] && command="ssh $ssh_spec \"$command\""
+    [ "$bases" ] && command="$command"" 1CEduWeb/data/${bases//,/ 1CEduWeb\/data\/}"
     [ "$dump_file" ] && {
         bash -c "$command" > "$dump_file"
         echo "$dump_file"
