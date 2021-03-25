@@ -10,7 +10,6 @@
 * Working with e5, sane way. Cross-platform
   - server control
   - dbutils wrapper
-  - dlrloader wrapper
   - dumping logs/postmortems
   - working with databases
 
