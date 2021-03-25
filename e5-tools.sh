@@ -72,11 +72,17 @@ function e5-isql() {
             r) local ssh_spec=$OPTARG;;
             i) local in_place=true;;
             h)
+                echo 'Executing sql commands/starting REPLs on local or remote e5 databases'
+                echo '---------------------------------------------------------------------'
                 echo 'Usage: e5-isql [-c <one-off sql command>]'
                 echo '               [-r <remote hosts spec>] # e.g. user@host'
                 echo '               [-i] # Edit db in-place'
                 echo '               [-h] # Show help and exit'
                 echo '               <path-to-db> # Relative to 1CEduWeb/data'
+                echo 'Examples: e5-isql -c "select * from ruser;" -r myserver edu_main/ls.fdb'
+                echo '          e5-isql -r myserver edu_main/ls.fdb'
+                echo '          e5-isql -ir myserver -c "update rversion set version = 42;" edu_main/ls.fdb'
+                echo '          e5-isql -i ls.fdb'
                 return 0
                 ;;
             ?) isql-e5 -h ; return 1 ;;
