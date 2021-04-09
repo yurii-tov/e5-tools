@@ -149,7 +149,7 @@ function e5-dump() {
             ?) dump-e5-logs -h ; return 1 ;;
         esac
     done
-    local command="$E5_CD_ROOT_DIR ; tar -cz 1CEduWeb/webapps/1CEduWeb/WEB-INF/{ls.xml,web.xml,log} 1CEduWeb/app*/build.properties common/jetty/etc/{*.properties,*.xml} common/jetty/logs"
+    local command="$E5_CD_ROOT_DIR ; tar -cz 1CEduWeb/webapps/1CEduWeb/WEB-INF/{ls.xml,web.xml,log} 1CEduWeb/app*/build.properties common/jetty/etc/{*.properties,*.xml} common/jetty/logs 1CEduWeb/utils/logs"
     [ "$ssh_spec" ] && command="ssh $ssh_spec \"$command\""
     [ "$bases" ] && command="$command"" 1CEduWeb/data/${bases//,/ 1CEduWeb\/data\/}"
     [ "$dump_file" ] && {
@@ -162,5 +162,5 @@ function e5-dump() {
 
 
 function e5-delete-logs() {
-    bash -c "$E5_CD_ROOT_DIR ; rm -rv 1CEduWeb/webapps/1CEduWeb/WEB-INF/log common/jetty/logs/*"
+    bash -c "$E5_CD_ROOT_DIR ; rm -rv 1CEduWeb/webapps/1CEduWeb/WEB-INF/log common/jetty/logs/* 1CEduWeb/utils/logs/*"
 }
