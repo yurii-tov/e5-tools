@@ -1,5 +1,5 @@
 [ "$OSTYPE" = "linux-gnu" ] || {
-    IS_WINDOWS=true
+    E5_ON_WINDOWS=true
 }
 
 
@@ -18,7 +18,7 @@ export E5_DBUTILS_WINDOWS="$E5_ROOT_DIR_WINDOWS/1CEduWeb/utils/1CE5DbUtils"
 export E5_ROOT_DIR="$E5_ROOT_DIR_LINUX"
 
 
-[ "$IS_WINDOWS" ] && {
+[ "$E5_ON_WINDOWS" ] && {
     E5_ROOT_DIR="$E5_ROOT_DIR_WINDOWS"
 }
 
@@ -35,7 +35,7 @@ alias e5-server-start="$E5_ROOT_DIR_LINUX/StartServer.sh &"
 alias e5-server-restart='e5-server-stop; sleep 10; e5-server-start'
 
 
-[ "$IS_WINDOWS" ] && {
+[ "$E5_ON_WINDOWS" ] && {
     alias posh='c:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -ExecutionPolicy Bypass'
     alias e5-server-status='posh "Get-Service *1c*"'
     alias e5-server-stop='posh "Get-Service *1c* | Stop-Service -Verbose" ; e5-server-status'
@@ -52,7 +52,7 @@ function dbutils() {
 }
 
 
-if [ "$IS_WINDOWS" ]; then
+if [ "$E5_ON_WINDOWS" ]; then
     function dbutils() {
         local -
         set -o pipefail
